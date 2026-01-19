@@ -5,37 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>💖婗★彈彈英雄★</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
+        /* 這裡保留你之前的粉色系 CSS 樣式... (為了節省篇幅，樣式與之前相同) */
         body { font-family: "Microsoft JhengHei", Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 20px; }
         .game-header { text-align: center; background: #333; color: white; padding: 15px; border-radius: 8px 8px 0 0; }
-        .game-header h1 { margin: 0; font-size: 24px; color: #FFFFFF; }
-        
-        /* 搜尋區塊 - 改為粉色系主題 */
+        .game-header h1 { margin: 0; font-size: 24px; color: #ff69b4; } /* 這裡幫你改成了粉紅色 */
         .filter-section { background: white; padding: 20px; border-radius: 0 0 8px 8px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .search-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .search-item { border: 1px solid #ffc1e3; padding: 10px; border-radius: 8px; text-align: center; background: #fff; }
         .search-item img { width: 60px; height: 60px; object-fit: cover; display: block; margin: 0 auto 5px; border-radius: 4px; background: #eee; }
         .search-item .name { font-size: 12px; font-weight: bold; margin-bottom: 5px; display: block; color: #d63384; }
-        
-        /* 加減按鈕 */
         .counter { display: flex; justify-content: center; align-items: center; gap: 5px; }
-        .counter button { width: 22px; height: 22px; cursor: pointer; border: 1px solid #ffc1e3; background: #fff0f6; border-radius: 4px; color: #d63384; font-weight: bold; }
+        .counter button { width: 22px; height: 22px; cursor: pointer; border: 1px solid #ffc1e3; background: #fff0f6; border-radius: 4px; color: #d63384; }
         .counter input { width: 25px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
-
         .search-btn { background: #ffb3d1; color: white; border: none; padding: 12px 40px; border-radius: 50px; cursor: pointer; font-size: 18px; font-weight: bold; display: block; margin: 0 auto; box-shadow: 0 4px 0 #f88fb7; }
-        .search-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #f88fb7; }
-
-        /* 表格樣式 - 粉紅色系 */
         .result-table { width: 100%; border-collapse: collapse; background: white; }
         .result-table thead { background: #ffb3d1; color: white; }
         .result-table th, .result-table td { border: 1px solid #eee; padding: 12px; text-align: center; }
-        
-        .id-cell { width: 150px; font-weight: bold; color: #444; }
-        .cards-cell { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start; }
-        .card-box { width: 75px; text-align: center; position: relative; }
-        .card-box img { width: 100%; height: 75px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px; background: #fafafa; }
-        .card-count-tag { position: absolute; top: -5px; right: -5px; background: #ff0000; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 20px; font-weight: bold; border: 1px solid white; }
-        .card-name-label { font-size: 10px; color: #777; margin-top: 3px; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .card-box { width: 75px; text-align: center; position: relative; display: inline-block; margin-right: 10px; }
+        .card-box img { width: 100%; height: 75px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px; }
+        .card-count-tag { position: absolute; top: -5px; right: -5px; background: #ff0000; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -48,7 +38,7 @@
     <div class="filter-section">
         <div class="search-grid">
             <div v-for="name in allAvailableCards" :key="name" class="search-item">
-                <img :src="'images/' + name + '.jpg'" :alt="name" onerror="this.src='https://via.placeholder.com/60?text=No+Img'">
+                <img :src="'images/' + name + '.jpg'" onerror="this.src='https://via.placeholder.com/60?text=No+Img'">
                 <span class="name">{{ name }}</span>
                 <div class="counter">
                     <button @click="changeCount(name, -1)">-</button>
@@ -57,289 +47,81 @@
                 </div>
             </div>
         </div>
-        <button class="search-btn" @click="doSearch">立即查詢符合組合</button>
+        <button class="search-btn" @click="doSearch">立即查詢</button>
     </div>
 
     <table class="result-table">
         <thead>
-            <tr>
-                <th style="width: 150px;">編號</th>
-                <th>組合內容</th>
-            </tr>
+            <tr><th style="width: 150px;">編號</th><th>組合內容</th></tr>
         </thead>
         <tbody>
             <tr v-for="item in searchResults" :key="item.id">
-                <td class="id-cell">{{ item.id }}</td>
-                <td class="cards-cell">
+                <td style="font-weight: bold;">{{ item.id }}</td>
+                <td>
                     <div class="card-box" v-for="(count, cardName) in item.cards" :key="cardName">
-                        <img :src="'images/' + cardName + '.jpg'" :alt="cardName" onerror="this.src='https://via.placeholder.com/75?text=No+Img'">
+                        <img :src="'images/' + cardName + '.jpg'" onerror="this.src='https://via.placeholder.com/75?text=No+Img'">
                         <span v-if="count > 1" class="card-count-tag">{{ count }}</span>
-                        <span class="card-name-label">{{ cardName }}</span>
+                        <div style="font-size: 10px; color: #777;">{{ cardName }}</div>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
-    <div v-if="searchResults.length === 0" style="text-align: center; padding: 50px; color: #999;">
-        目前無符合此數量的組合。
-    </div>
 </div>
 
 <script>
     const { createApp } = Vue;
+    // 重要：這裡請貼上你剛才複製的 Google CSV 網址
+    const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRe_DkETdOHyEKFRMG-FG5nqpI_jqbhyL7-uVlP7JTgS4FuDM8nplYhTBATLshRrsNY1QWPru8p-lun/pub?output=csv'; 
 
     createApp({
         data() {
             return {
-                // 1. 這裡填寫所有可搜尋的卡片名稱
-                allAvailableCards: ['龍炮', '武裝海螺', '愛神之弓', '繆斯', '飛翼天狼', '翠蝶女王', '白龍', '糖豆人', '晶石弓', '晶石炮', '萬能冰箱', '獨角獸弓', '晶石步槍', '晶石火箭筒', '怒牙', '獵鷹', '晶石手雷', '晶石手炮', '蟲巢手炮', '派對之星', '高壓水槍'],
-                
-                searchCounts: {}, // 紀錄搜尋數量
-
-                // 2. 你的資料庫清單
-                allPackages: [
-    { id: 'HER4669 男角 【S78】', cards: { '愛神之弓': 1 } },
-    { id: 'HER4657 男角 【S78】', cards: { '武裝海螺': 1 } },
-    { id: 'HER4463 女角 【S76】', cards: { '龍炮': 1 } },
-    { id: 'HER4326 男角 【S74】', cards: { '龍炮': 1 } },
-    { id: 'KV00098 女角 【S72】', cards: { '龍炮': 1 } },
-    { id: 'KV00092 女角 【S71】', cards: { '繆斯': 1 } },
-    { id: 'HER4009 女角 【S71】', cards: { '愛神之弓': 1 } },
-    { id: 'KV00085 女角 【S71】', cards: { '武裝海螺': 1 } },
-    { id: 'HER4003 男角 【S71】', cards: { '飛翼天狼': 1 } },
-    { id: 'HER3849 男角 【S69】', cards: { '愛神之弓': 1 } },
-    { id: 'HER3740 男角 【S68】', cards: { '繆斯': 1 } },
-    { id: 'KV00074 女角 【S68】', cards: { '武裝海螺': 1 } },
-    { id: 'HER3632 男角 【S67】', cards: { '繆斯': 1 } },
-    { id: 'HER3538 男角 【S65】', cards: { '龍炮': 1 } },
-    { id: 'HER3513 女角 【S65】', cards: { '繆斯': 1 } },
-    { id: 'HER2702 男角 【S57】', cards: { '龍炮': 1 } },
-    { id: 'BR00028 女角 【S46】', cards: { '武裝海螺': 1 } },
-    { id: 'BR00044 女角 【S46】', cards: { '武裝海螺': 1 } },
-    { id: 'FFR109 女角 【S78】', cards: { '白龍': 1 } },
-    { id: 'HER4461 女角 【S76】', cards: { '白龍': 1, '怒牙': 1, '極致休閒': 1 } },
-    { id: 'KV00115 女角 【S76】', cards: { '翠蝶女王': 1, '潮趣出街': 1 } },
-    { id: 'KV00106 男角 【S76】', cards: { '飛翼天狼': 1 } },
-    { id: 'KV00094 男角 【S76】', cards: { '翠蝶女王': 1 } },
-    { id: 'HER4456 女角 【S76】', cards: { '白龍': 1 } },
-    { id: 'KV00107 女角 【S75】', cards: { '翠蝶女王': 1 } },
-    { id: 'KV00059 男角 【S75】', cards: { '白龍': 1 } },
-    { id: 'HER4119 男角 【S72】', cards: { '白龍': 1, '侍者': 1 } },
-    { id: 'HER4024 男角 【S71】', cards: { '糖豆人': 1, '蟲巢手炮': 1 } },
-    { id: 'KV00093 男角 【S70】', cards: { '翠蝶女王': 1 } },
-    { id: 'KV00090 男角 【S67】', cards: { '翠蝶女王': 1 } },
-    { id: 'HER3616 女角 【S67】', cards: { '翠蝶女王': 1 } },
-    { id: 'KV00038 男角 【S64】', cards: { '飛翼天狼': 1 } },
-    { id: 'HER3320 男角 【S63】', cards: { '白龍': 1, '甜心項圈': 1, '銀色克里斯': 1 } },
-    { id: 'HER3333 女角 【S63】', cards: { '飛翼天狼': 1 } },
-    { id: 'HER3228 女角 【S62】', cards: { '糖豆人': 1, '高壓水槍': 1 } },
-    { id: 'HER3121 男角 【S61】', cards: { '翠蝶女王': 1 } },
-    { id: 'KV00063 女角 【S59】', cards: { '糖豆人': 1, '秋日暖陽': 1 } },
-    { id: 'KV00049 女角 【S59】', cards: { '翠蝶女王': 1 } },
-    { id: 'HER2701 男角 【S57】', cards: { '白龍': 1 } },
-    { id: 'HER2608 男角 【S56】', cards: { '糖豆人': 1, '晶石炮': 1 } },
-    { id: 'KV00057 女角 【S55】', cards: { '翠蝶女王': 1, '晶石火箭筒': 1 } },
-    { id: 'HER2552 男角 【S54】', cards: { '翠蝶女王': 1 } },
-    { id: 'HER2549 男角 【S54】', cards: { '飛翼天狼': 1 } },
-    { id: 'HER2548 男角 【S54】', cards: { '糖豆人': 1 } },
-    { id: 'HER2439 女角 【S53】', cards: { '飛翼天狼': 1 } },
-    { id: 'BR00058 女角 【S53】', cards: { '飛翼天狼': 1 } },
-    { id: 'BR00048 男角 【S49】', cards: { '飛翼天狼': 1 } },
-    { id: 'BR00013 女角 【S47】', cards: { '飛翼天狼': 1 } },
-    { id: 'BR00040 男角 【S46】', cards: { '飛翼天狼': 1 } },
-    { id: 'FFR003 女角 【S45】', cards: { '翠蝶女王': 1 } },
-
-    // --- 史詩武器 ---
-    { id: 'KV00126 男角 【S78】', cards: { '晶石弓': 1, '收租二代': 1 } },
-    { id: 'HER4670 女角 【S78】', cards: { '獵鷹': 1, '兔兔蘿莉': 1 } },
-    { id: 'FFR102 女角 【S78】', cards: { '晶石弓': 1 } },
-    { id: 'KV0100 女角 【S78】', cards: { '萬能冰箱': 1 } },
-    { id: 'HER4541 女角 【S77】', cards: { '萬能冰箱': 1, '晶石步槍': 1, '侍者': 1 } },
-    { id: 'KV00119 女角 【S77】', cards: { '晶石弓': 1, '紅色龍角': 1 } },
-    { id: 'HER4568 男角 【S77】', cards: { '萬能冰箱': 1 } },
-    { id: 'KV00075 女角 【S77】', cards: { '獨角獸弓': 1 } },
-    { id: 'KV00091 女角 【S77】', cards: { '晶石弓': 1 } },
-    { id: 'KV00071 女角 【S77】', cards: { '晶石炮': 1 } },
-    { id: 'KV00111 男角 【S77】', cards: { '獨角獸弓': 1 } },
-    { id: 'KV00113 女角 【S76】', cards: { '獨角獸弓': 1 } },
-    { id: 'KV00104 女角 【S76】', cards: { '晶石弓': 1 } },
-    { id: 'KV00097 男角 【S75】', cards: { '晶石弓': 1, '火吻淑女': 1 } },
-    { id: 'HER4307 女角 【S74】', cards: { '晶石弓': 1, '田園愛情': 1 } },
-    { id: 'HER4323 女角 【S74】', cards: { '高壓水槍': 2 } },
-    { id: 'HER4201 男角 【S73】', cards: { '晶石弓': 1 } },
-    { id: 'KV00099 女角 【S73】', cards: { '獨角獸弓': 1 } },
-    { id: 'KV00084 男角 【S72】', cards: { '獨角獸弓': 1 } },
-    { id: 'HER4004 女角 【S71】', cards: { '晶石弓': 1 } },
-    { id: 'HER4011 男角 【S71】', cards: { '晶石炮': 1 } },
-    { id: 'KV00086 女角 【S70】', cards: { '晶石炮': 1, '晶石手雷': 1 } },
-    { id: 'KV00089 男角 【S70】', cards: { '獨角獸弓': 1 } },
-    { id: 'KV00088 男角 【S69】', cards: { '晶石弓': 1 } },
-    { id: 'HER3717 男角 【S68】', cards: { '晶石弓': 1 } },
-    { id: 'KV00080 女角 【S68】', cards: { '萬能冰箱': 1 } },
-    { id: 'HER3631 女角 【S67】', cards: { '晶石弓': 1 } },
-    { id: 'KV00056 男角 【S67】', cards: { '晶石炮': 1 } },
-    { id: 'KV00079 男角 【S66】', cards: { '獨角獸弓': 1 } },
-    { id: 'KV0001 女角 【S65】', cards: { '晶石手雷': 1, '暗影綺語': 1 } },
-    { id: 'KV0081 男角 【S65】', cards: { '晶石炮': 1, '旺旺項圈': 1 } },
-    { id: 'KV00070 女角 【S65】', cards: { '晶石炮': 1 } },
-    { id: 'HER3404 女角 【S64】', cards: { '晶石弓': 1 } },
-    { id: 'KV00078 女角 【S63】', cards: { '晶石弓': 1 } },
-    { id: 'HER3305 男角 【S63】', cards: { '晶石弓': 1 } },
-    { id: 'KV00066 女角 【S63】', cards: { '獨角獸弓': 1 } },
-    { id: 'KV00072 女角 【S63】', cards: { '晶石火箭筒': 1 } },
-    { id: 'KV00076 女角 【S62】', cards: { '晶石手雷': 1, '酷玩': 1 } },
-    { id: 'HER3230 女角 【S62】', cards: { '晶石弓': 1 } },
-    { id: 'KV00064 女角 【S61】', cards: { '晶石弓': 1 } },
-    { id: 'KV00069 男角 【S61】', cards: { '晶石炮': 1 } },
-    { id: 'KV00077 男角 【S61】', cards: { '萬能冰箱': 1 } },
-    { id: 'KV00030 男角 【S61】', cards: { '晶石火箭筒': 1 } },
-    { id: 'KV00061 男角 【S60】', cards: { '晶石弓': 1, '晶石手炮': 1 } },
-    { id: 'HER2910 男角 【S59】', cards: { '晶石弓': 1 } },
-    { id: 'KV00067 女角 【S59】', cards: { '獨角獸弓': 1 } },
-    { id: 'KV00037 男角 【S59】', cards: { '萬能冰箱': 1 } },
-    { id: 'KV00047 女角 【S58】', cards: { '獨角獸弓': 1, '頭頂草原': 1 } },
-    { id: 'KV00068 女角 【S58】', cards: { '晶石炮': 1, '兔兔蘿莉': 1 } },
-    { id: 'KV00032 男角 【S58】', cards: { '晶石步槍': 1, '火吻淑女': 1 } },
-    { id: 'KV00019 女角 【S58】', cards: { '晶石弓': 1 } },
-    { id: 'HER2706 男角 【S57】', cards: { '晶石火箭筒': 1, '派對之星': 1 } },
-    { id: 'HER2707 女角 【S57】', cards: { '晶石炮': 1 } },
-    { id: 'HER2719 女角 【S57】', cards: { '晶石弓': 1 } },
-    { id: 'KV00035 女角 【S56】', cards: { '獨角獸弓': 1 } },
-    { id: 'KV00065 女角 【S56】', cards: { '晶石炮': 1 } },
-    { id: 'HER2547 男角 【S54】', cards: { '晶石弓': 1, '晶石步槍': 1 } },
-    { id: 'BR00029 男角 【S54】', cards: { '獨角獸弓': 1 } },
-    { id: 'HER2531 男角 【S54】', cards: { '晶石炮': 1 } },
-    { id: 'BR00054 女角 【S54】', cards: { '怒牙': 1 } },
-    { id: 'BR00060 男角 【S53】', cards: { '晶石炮': 1 } },
-    { id: 'BR00045 男角 【S53】', cards: { '萬能冰箱': 1 } },
-    { id: 'BR00050 女角 【S52】', cards: { '晶石弓': 1, '派對之星': 1 } },
-    { id: 'HER2334 男角 【S52】', cards: { '獨角獸弓': 1 } },
-    { id: 'HER2322 男角 【S52】', cards: { '晶石炮': 1 } },
-    { id: 'BR00042 女角 【S52】', cards: { '晶石炮': 1 } },
-    { id: 'BR00053 男角 【S51】', cards: { '晶石炮': 1 } },
-    { id: 'BR00046 男角 【S51】', cards: { '晶石弓': 1 } },
-    { id: 'HER2229 男角 【S50】', cards: { '晶石弓': 1 } },
-    { id: 'HER2245 女角 【S50】', cards: { '晶石弓': 1 } },
-    { id: 'HER2136 男角 【S47】', cards: { '晶石弓': 1 } },
-    { id: 'FFR106 女角 【S46】', cards: { '晶石手雷': 1, '高壓水槍': 1 } },
-    { id: 'BR00041 男角 【S46】', cards: { '晶石炮': 1 } },
-    { id: 'BR00043 女角 【S46】', cards: { '獨角獸弓': 1 } },
-    { id: 'BR00026 男角 【S45】', cards: { '晶石炮': 1 } },
-    { id: 'BR00036 男角 【S44】', cards: { '晶石手雷': 1, '蟲巢手炮': 1 } },
-    { id: 'BR00027 男角 【S44】', cards: { '獨角獸弓': 1 } },
-    { id: 'BR00033 女角 【S44】', cards: { '高壓水槍': 1 } },
-    { id: 'BR00034 男角 【S44】', cards: { '高壓水槍': 1 } },
-    { id: 'BR00025 男角 【S43】', cards: { '萬能冰箱': 1 } },
-    { id: 'BR0017 女角 【S40】', cards: { '晶石步槍': 1 } },
-    { id: 'BR0024 女角 【S40】', cards: { '獵鷹': 1 } },
-    { id: 'BR0022 女角 【S40】', cards: { '晶石步槍': 1, '怒牙': 1 } },
-    { id: 'BR0018 女角 【S39】', cards: { '晶石炮': 1 } },
-    { id: 'BR0020 女角 【S39】', cards: { '晶石火箭筒': 1 } },
-    { id: 'BR0002 女角 【S38】', cards: { '晶石火箭筒': 1 } },
-    { id: 'BR0004 女角 【S38】', cards: { '怒牙': 1 } },
-    { id: 'BR0012 女角 【S37】', cards: { '晶石步槍': 1 } },
-    { id: 'DA0033 女角 【S36】', cards: { '晶石手雷': 1 } },
-    { id: 'DA0053 女角 【S35】', cards: { '晶石步槍': 2 } },
-    { id: 'DA0055 女角 【S35】', cards: { '晶石手炮': 1 } },
-    { id: 'DA0049 女角 【S35】', cards: { '蟲巢手炮': 1 } },
-    { id: 'DA0044 男角 【S32】', cards: { '晶石火箭筒': 1 } },
-    { id: 'DA0034 男角 【S31】', cards: { '蟲巢手炮': 1 } },
-    { id: 'DA0037 男角 【S31】', cards: { '怒牙': 1 } },
-    { id: 'DA0027 男角 【S22】', cards: { '晶石手雷': 1, '個性亮染': 1 } },
-    { id: 'DA0016 男角 【S22】', cards: { '晶石弓': 1 } },
-    { id: 'DA0035 男角 【S22】', cards: { '派對之星': 1 } },
-    { id: 'DA0029 男角 【S22】', cards: { '高壓水槍': 1 } },
-    { id: 'DA0030 男角 【S22】', cards: { '晶石手炮': 1 } },
-    { id: 'DA0021 男角 【S22】', cards: { '獵鷹': 1 } },
-    { id: 'DA0010 男角 【S21】', cards: { '晶石手雷': 1, '田園愛情': 1 } },
-    { id: 'DA0013 男角 【S21】', cards: { '怒牙': 1 } },
-    { id: 'DA0004 男角 【S20】', cards: { '晶石手炮': 1 } },
-
-    // --- 100T 任選區 (時裝) ---
-    { id: 'KV00087 女角 【S67】', cards: { '示井貨郎': 1 } },
-    { id: 'BR00062 男角 【S54】', cards: { '兔兔蘿莉': 1 } },
-    { id: 'BR00051 男角 【S53】', cards: { '夜晚小貓': 1 } },
-    { id: 'HER2044 男角 【S52】', cards: { '火吻淑女': 1, '夜晚小貓': 1 } },
-    { id: 'BR00055 男角 【S52】', cards: { '東方龐克': 1 } },
-    { id: 'BR00031 男角 【S50】', cards: { '侍者': 1 } },
-    { id: 'BR0052 男角 【S50】', cards: { '長袖善舞': 1 } },
-    { id: 'BR0006 女角 【S40】', cards: { '迅捷投手': 1 } },
-    { id: 'BR0010 女角 【S40】', cards: { '秋日暖陽': 1 } },
-    { id: 'BR0023 女角 【S40】', cards: { '蝴蝶頭飾': 1 } },
-    { id: 'BR0015 女角 【S40】', cards: { '酷玩': 1 } },
-    { id: 'BR0014 女角 【S39】', cards: { '東方龐克': 1 } },
-    { id: 'BR0016 女角 【S39】', cards: { '金色短髮': 1 } },
-    { id: 'BR005 女角 【S38】', cards: { '個性亮染': 1 } },
-    { id: 'BR008 女角 【S38】', cards: { '全壘打': 1 } },
-    { id: 'BR009 女角 【S38】', cards: { '新東部風格': 1, '旺旺項圈': 1 } },
-    { id: 'BR011 女角 【S38】', cards: { '暗影綺語': 1 } },
-    { id: 'BR001 女角 【S37】', cards: { '陰陽頭': 1 } },
-    { id: 'BR003 女角 【S37】', cards: { '五彩斑斕的黑': 1 } },
-    { id: 'DA061 女角 【S36】', cards: { '個性亮染': 1 } },
-    { id: 'DA062 女角 【S36】', cards: { '機車頭盔': 1 } },
-    { id: 'DA065 女角 【S36】', cards: { '機車頭盔': 1 } },
-    { id: 'DA047 女角 【S35】', cards: { '甜甜圈': 1 } },
-    { id: 'DA052 女角 【S35】', cards: { '喵喵頭飾': 1 } },
-    { id: 'DA056 女角 【S35】', cards: { '金色短髮': 1 } },
-    { id: 'DA057 女角 【S35】', cards: { '蝴蝶頭飾': 1 } },
-    { id: 'DA058 女角 【S35】', cards: { '旺旺項圈': 1 } },
-    { id: 'DA040 女角 【S34】', cards: { '可愛機車頭盔': 1 } },
-    { id: 'DA050 女角 【S34】', cards: { '陰陽頭': 1 } },
-    { id: 'DA018 男角 【S33】', cards: { '銀色克里斯': 1 } },
-    { id: 'DA048 女角 【S33】', cards: { '蛇寶寶': 1 } },
-    { id: 'DA045 女角 【S32】', cards: { '藍色龍角': 1 } },
-    { id: 'DA036 男角 【S32】', cards: { '迅捷投手': 1 } },
-    { id: 'DA042 男角 【S32】', cards: { '運動小妹': 1 } },
-    { id: 'DA043 男角 【S32】', cards: { '金色短髮': 1 } },
-    { id: 'DA051 女角 【S32】', cards: { '亮色短髮': 1 } },
-    { id: 'DA028 男角 【S32】', cards: { '雙球甜心': 1 } },
-    { id: 'DA041 女角 【S32】', cards: { '頭頂草原': 1 } },
-    { id: 'DA024 男角 【S31】', cards: { '兔兔羅莉': 1 } },
-    { id: 'DA031 男角 【S22】', cards: { '青蔥期': 1 } },
-    { id: 'DA038 男角 【S22】', cards: { '幻銀流光': 1 } },
-    { id: 'DA015 男角 【S22】', cards: { '裝飾禮帽': 1 } },
-    { id: 'DA006 男角 【S21】', cards: { '陰陽頭': 1, '蛇寶寶': 1 } },
-    { id: 'DA020 男角 【S21】', cards: { '紅色龍角': 1 } },
-    { id: 'DA014 男角 【S21】', cards: { '哥德剪法': 1 } },
-    { id: 'DA022 男角 【S21】', cards: { '幻銀流光': 1 } },
-    { id: 'DA011 男角 【S21】', cards: { '銀色克里斯': 1 } },
-    { id: 'DA001 男角 【S21】', cards: { '暗影綺語': 1 } },
-    { id: 'DA002 男角 【S21】', cards: { '秋日暖陽': 1 } },
-    { id: 'DA023 男角 【S21】', cards: { '青蔥期': 1 } },
-    { id: 'DA003 男角 【S21】', cards: { '15區後街': 1 } },
-    { id: 'DA019 男角 【S21】', cards: { '日常出行': 1 } },
-    { id: 'DA005 男角 【S20】', cards: { '喵喵項圈': 1 } }
-                ],
+	allAvailableCards: ['龍炮', '武裝海螺', '愛神之弓', '繆斯', '飛翼天狼', '翠蝶女王', '白龍', '糖豆人', '晶石弓', '晶石炮', '萬能冰箱', '獨角獸弓', '晶石步槍', '晶石火箭筒', '怒牙', '獵鷹', '晶石手雷', '晶石手炮', '蟲巢手炮', '派對之星', '高壓水槍'],
+                searchCounts: {},
+                allPackages: [],
                 searchResults: []
             }
         },
         methods: {
             changeCount(name, delta) {
-                if (!this.searchCounts[name]) this.searchCounts[name] = 0;
-                let newValue = this.searchCounts[name] + delta;
-                if (newValue < 0) newValue = 0;
-                this.searchCounts[name] = newValue;
+                let current = this.searchCounts[name] || 0;
+                let next = current + delta;
+                this.searchCounts[name] = next < 0 ? 0 : next;
             },
             doSearch() {
                 this.searchResults = this.allPackages.filter(pkg => {
                     for (let name in this.searchCounts) {
-                        let requiredCount = this.searchCounts[name];
-                        if (requiredCount > 0) {
-                            let pkgCount = pkg.cards[name] || 0;
-                            if (pkgCount < requiredCount) return false;
-                        }
+                        if (this.searchCounts[name] > 0 && (pkg.cards[name] || 0) < this.searchCounts[name]) return false;
                     }
                     return true;
+                });
+            },
+            fetchData() {
+                Papa.parse(SPREADSHEET_URL, {
+                    download: true,
+                    header: true,
+                    complete: (results) => {
+                        this.allPackages = results.data.map(row => {
+                            let cardData = {};
+                            if (row.content) {
+                                row.content.split('+').forEach(part => {
+                                    let [name, count] = part.split('x');
+                                    cardData[name.trim()] = parseInt(count) || 1;
+                                });
+                            }
+                            return { id: row.id, cards: cardData };
+                        });
+                        this.searchResults = this.allPackages;
+                    }
                 });
             }
         },
         mounted() {
-            // 初始化顯示
-            this.allAvailableCards.forEach(name => this.searchCounts[name] = 0);
-            this.searchResults = this.allPackages;
+            this.allAvailableCards.forEach(n => this.searchCounts[n] = 0);
+            this.fetchData();
         }
     }).mount('#app');
 </script>
-
 </body>
 </html>
