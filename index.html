@@ -198,7 +198,7 @@
         mounted() {
             this.allAvailableCards.forEach(n => this.searchCounts[n] = 0);
             if (SPREADSHEET_URL === 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRe_DkETdOHyEKFRMG-FG5nqpI_jqbhyL7-uVlP7JTgS4FuDM8nplYhTBATLshRrsNY1QWPru8p-lun/pub?output=csv') {
-                alert('https://docs.google.com/spreadsheets/d/e/2PACX-1vRe_DkETdOHyEKFRMG-FG5nqpI_jqbhyL7-uVlP7JTgS4FuDM8nplYhTBATLshRrsNY1QWPru8p-lun/pub?output=csv');
+                alert('請先在 index.html 中填入你的 Google 試算表 CSV 網址！');
                 this.loading = false;
             } else {
                 this.fetchData();
