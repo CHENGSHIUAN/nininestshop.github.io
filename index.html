@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖婗★手遊代標/組合查詢中心</title>
+    <style>
+        :root {
+            --primary-pink: #ff85b2;
+            --dark-bg: #1a1a1a;
+            --card-bg: #2d2d2d;
+        }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: var(--primary-pink);
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 133, 178, 0.5);
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 18px;
+        }
+
+        /* 遊戲選擇網格 */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 90%;
+            max-width: 1000px;
+            padding: 20px;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 25px;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-pink);
+            box-shadow: 0 10px 30px rgba(255, 133, 178, 0.3);
+        }
+
+        /* 遊戲預覽圖 */
+        .game-img {
+            width: 100%;
+            height: 180px;
+            background-color: #3d3d3d;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+        }
+
+        .game-card h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .game-status {
+            margin-top: 10px;
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            background: rgba(255, 133, 178, 0.2);
+            color: var(--primary-pink);
+            border: 1px solid var(--primary-pink);
+        }
+
+        .coming-soon {
+            filter: grayscale(1);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>💖 婗 ⭐️ 遊戲組合查詢站</h1>
+        <p>請選擇您想查詢的遊戲 (๑・ω-)～♥”</p>
+    </div>
+
+    <div class="game-grid">
+        <a href="dandanhero/index.html" class="game-card">
+            <div class="game-img" style="background-image: url('dandan_cover.jpg');"></div>
+            <h2>彈彈英雄</h2>
+            <div class="game-status">立即進入</div>
+        </a>
+
+        <div class="game-card coming-soon">
+            <div class="game-img" style="background-image: url('https://via.placeholder.com/400x200?text=敬請期待');"></div>
+            <h2>新遊戲</h2>
+            <div class="game-status">籌備中...</div>
+        </div>
+    </div>
+
+</body>
+</html>
