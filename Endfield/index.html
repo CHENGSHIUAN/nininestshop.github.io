@@ -107,7 +107,7 @@
     <div class="filter-section">
         <div class="search-grid">
             <div v-for="name in allAvailableCards" :key="name" class="search-item">
-                <img :src="'images/' + name + '.jpg'" onerror="this.src='https://via.placeholder.com/65?text=?'">
+                <img :src="'images/' + name + '.png'" onerror="this.src='https://via.placeholder.com/65?text=?'">
                 <span class="name">{{ name }}</span>
                 <div class="counter">
                     <button @click="changeCount(name, -1)">-</button>
@@ -128,7 +128,7 @@
             </div>
             <div class="content-area">
                 <div class="card-box" v-for="(count, cardName) in item.cards" :key="cardName">
-                    <img :src="'images/' + cardName + '.jpg'" onerror="this.src='https://via.placeholder.com/80?text=?'">
+                    <img :src="'images/' + cardName + '.png'" onerror="this.src='https://via.placeholder.com/80?text=?'">
                     <span v-if="count > 1" class="card-count-tag">{{ count }}</span>
                     <span class="card-label">{{ cardName }}</span>
                 </div>
@@ -152,7 +152,7 @@
         data() {
             return {
                 // 這裡填寫搜尋區要出現的卡片圖片名稱
-                allAvailableCards: ['準備中','準備中'],
+                allAvailableCards: ['萊萬汀','潔爾佩塔','伊馮','餘燼','黎風','駿衛','別禮','艾爾黛拉','熔鑄火焰','同類相食','白夜新星','昔日精品','楔子','騎士精神','驍勇'],
                 searchCounts: {}, 
                 allPackages: [],
                 searchResults: [],
@@ -219,5 +219,4 @@
 </script>
 
 </body>
-
 </html>
