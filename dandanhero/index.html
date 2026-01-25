@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💖婗⭐彈彈英雄⭐組合查詢</title>
+    <title>💖婗⭐彈彈英雄⭐台港澳組合查詢</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
@@ -27,11 +27,24 @@
         }
         .game-header h1 { margin: 0; font-size: 28px; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
 
+        /* 搜尋區塊 */
         .filter-section { 
             background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; 
             box-shadow: 0 10px 25px rgba(255, 133, 178, 0.1); border: 1px solid #ffeef4;
         }
 
+.price-tag {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 2px 10px;
+    background-color: #fff0f6;
+    color: #ff4757;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px solid #ff85b2;
+}
+        
         .search-grid { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; margin-bottom: 25px; 
         }
@@ -44,6 +57,7 @@
         .search-item img { width: 65px; height: 65px; object-fit: cover; border-radius: 10px; margin-bottom: 8px; background: #fafafa; }
         .search-item .name { font-size: 13px; font-weight: 600; color: #666; display: block; height: 1.2em; overflow: hidden; }
 
+        /* 加減計數器 */
         .counter { display: flex; justify-content: center; align-items: center; gap: 5px; margin-top: 5px; }
         .counter button { width: 22px; height: 22px; cursor: pointer; border: 1px solid #ffc1e3; background: #fff0f6; border-radius: 4px; color: #d63384; font-weight: bold; }
         .counter input { width: 25px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
@@ -56,6 +70,7 @@
         }
         .search-btn:hover { transform: scale(1.05); }
 
+        /* 結果列表 (卡片流) */
         .package-list { display: flex; flex-direction: column; gap: 15px; }
         
         .package-card {
@@ -64,23 +79,8 @@
             border-left: 6px solid var(--primary-pink); transition: 0.3s;
         }
         .package-card:hover { transform: scale(1.005); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-
-        /* --- 樣式修正區 --- */
         .id-area { width: 180px; padding-right: 20px; border-right: 1px dashed #ddd; }
         .id-text { font-size: 15px; font-weight: bold; color: #e83e8c; word-break: break-all; }
-        
-        .price-tag {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 2px 10px;
-            background-color: #fff0f6;
-            color: #ff4757;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: bold;
-            border: 1px solid #ff85b2;
-        }
-        /* ---------------- */
 
         .content-area { flex: 1; padding-left: 20px; display: flex; flex-wrap: wrap; gap: 12px; }
 
@@ -93,6 +93,7 @@
         }
         .card-label { font-size: 11px; color: #888; margin-top: 5px; font-weight: 500; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
+        /* 載入中動畫 */
         .loading { text-align: center; padding: 50px; color: var(--primary-pink); font-weight: bold; }
     </style>
 </head>
@@ -100,7 +101,7 @@
 
 <div id="app">
     <header class="game-header">
-        <h1>💖婗⭐彈彈英雄⭐</h1>
+        <h1>💖婗⭐彈彈英雄⭐台港澳</h1>
     </header>
 
     <div class="filter-section">
@@ -124,11 +125,7 @@
         <div class="package-card" v-for="item in searchResults" :key="item.id">
             <div class="id-area">
                 <div class="id-text">{{ item.id }}</div>
-                <div v-if="item.price" class="price-tag">
-                    💰 {{ item.price }}
-                </div>
             </div>
-            
             <div class="content-area">
                 <div class="card-box" v-for="(count, cardName) in item.cards" :key="cardName">
                     <img :src="'images/' + cardName + '.jpg'" onerror="this.src='https://via.placeholder.com/80?text=?'">
@@ -147,12 +144,14 @@
 <script>
     const { createApp } = Vue;
 
-    // Google 試算表 CSV 網址
+    // --- 【請務必修改這裡】 ---
+    // 貼上你在 Google 試算表發布後取得的 CSV 網址
     const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRe_DkETdOHyEKFRMG-FG5nqpI_jqbhyL7-uVlP7JTgS4FuDM8nplYhTBATLshRrsNY1QWPru8p-lun/pub?output=csv'; 
 
     createApp({
         data() {
             return {
+                // 這裡填寫搜尋區要出現的卡片圖片名稱
                 allAvailableCards: ['龍炮', '武裝海螺', '愛神之弓', '繆斯', '飛翼天狼', '翠蝶女王', '白龍', '糖豆人', '晶石弓', '晶石炮', '萬能冰箱', '獨角獸弓', '晶石步槍', '晶石火箭筒', '怒牙', '獵鷹', '晶石手雷', '晶石手炮', '蟲巢手炮', '派對之星', '高壓水槍'],
                 searchCounts: {}, 
                 allPackages: [],
@@ -167,6 +166,7 @@
                 this.searchCounts[name] = newValue < 0 ? 0 : newValue;
             },
             doSearch() {
+                // 篩選邏輯：組合內的卡片數量必須大於等於搜尋設定的數量
                 this.searchResults = this.allPackages.filter(pkg => {
                     for (let name in this.searchCounts) {
                         let required = this.searchCounts[name];
@@ -184,22 +184,23 @@
                     header: true,
                     complete: (results) => {
                         this.allPackages = results.data
-                            .filter(row => row.id) 
+                            .filter(row => row.id) // 過濾空行
                             .map(row => {
                                 let cardData = {};
-                                if (row.content) { 
+                                if (row.content) {
+                                    // 支援格式： 名字x數量+名字x數量
                                     row.content.split('+').forEach(part => {
                                         let [name, count] = part.split('x');
                                         if (name) cardData[name.trim()] = parseInt(count) || 1;
                                     });
                                 }
-                                return { 
-                                    id: row.id, 
-                                    price: row.price, 
-                                    cards: cardData 
-                                };
+                                return { id: row.id, cards: cardData };
                             });
                         this.searchResults = this.allPackages;
+                        this.loading = false;
+                    },
+                    error: (err) => {
+                        alert('讀取試算表失敗，請檢查網址是否正確且已發布為 CSV。');
                         this.loading = false;
                     }
                 });
@@ -207,10 +208,15 @@
         },
         mounted() {
             this.allAvailableCards.forEach(n => this.searchCounts[n] = 0);
-            this.fetchData();
+            if (SPREADSHEET_URL === 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRe_DkETdOHyEKFRMG-FG5nqpI_jqbhyL7-uVlP7JTgS4FuDM8nplYhTBATLshRrsNY1QWPru8p-lun/pubhtml') {
+                alert('請先在 index.html 中填入你的 Google 試算表 CSV 網址！');
+                this.loading = false;
+            } else {
+                this.fetchData();
+            }
         }
     }).mount('#app');
 </script>
+
 </body>
 </html>
-
