@@ -71,8 +71,23 @@
             color: #666; 
             display: block; 
             line-height: 1.2em;
-            max-height: 2.4em;
+            max-height: 2.4em;   /* ⭐ 兩行 */
             overflow: hidden;
+        }
+
+        .card-count-tag { 
+            position: absolute; 
+            top: -8px; 
+            right: -8px; 
+            background: #ff4757; 
+            color: white; 
+            border-radius: 50%; 
+            width: 22px; 
+            height: 22px; 
+            font-size: 12px; 
+            line-height: 22px; 
+            font-weight: bold; 
+            border: 2px solid white; 
         }
 
         .counter { 
@@ -87,6 +102,11 @@
             width: 22px; 
             height: 22px; 
             cursor: pointer; 
+            border: 1px solid #ffc1e3; 
+            background: #fff0f6; 
+            border-radius: 4px; 
+            color: #d63384; 
+            font-weight: bold; 
         }
 
         .counter input { 
@@ -218,7 +238,7 @@
             <div class="content-area">
                 <div class="card-box" v-for="(count, cardName) in item.cards" :key="cardName">
                     <img :src="'images/' + cardName + '.png'">
-                    <span v-if="count > 1">{{ count }}</span>
+                    <span v-if="count > 1" class="card-count-tag">{{ count }}</span>
                     <span class="card-label">{{ cardName }}</span>
                 </div>
             </div>
