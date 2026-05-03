@@ -21,80 +21,169 @@
         }
 
         .game-header { 
-            text-align: center; background: linear-gradient(135deg, #333, #555); 
-            color: white; padding: 30px; border-radius: 15px; margin-bottom: 25px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: center; 
+            background: linear-gradient(135deg, #333, #555); 
+            color: white; 
+            padding: 25px; 
+            border-radius: 15px; 
+            margin-bottom: 20px; 
         }
-        .game-header h1 { margin: 0; font-size: 28px; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
 
-        /* 搜尋區塊 */
+        .game-header h1 { 
+            margin: 0; 
+            font-size: 26px; 
+        }
+
         .filter-section { 
-            background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; 
-            box-shadow: 0 10px 25px rgba(255, 133, 178, 0.1); border: 1px solid #ffeef4;
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-bottom: 25px; 
         }
 
-.price-tag {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 2px 10px;
-    background-color: #fff0f6;
-    color: #ff4757;
-    border-radius: 50px;
-    font-size: 14px;
-    font-weight: bold;
-    border: 1px solid #ff85b2;
-}
-        
         .search-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; margin-bottom: 25px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+            gap: 12px; 
+            margin-bottom: 20px; 
         }
-        
-        .search-item { 
-            border: 2px solid #f0f0f0; padding: 10px; border-radius: 12px; text-align: center; 
-            background: #fff; transition: transform 0.2s, border-color 0.2s;
-        }
-        .search-item:hover { transform: translateY(-3px); border-color: var(--primary-pink); }
-        .search-item img { width: 65px; height: 65px; object-fit: cover; border-radius: 10px; margin-bottom: 8px; background: #fafafa; }
-        .search-item .name { font-size: 13px; font-weight: 600; color: #666; display: block; height: 1.2em; overflow: hidden; }
 
-        /* 加減計數器 */
-        .counter { display: flex; justify-content: center; align-items: center; gap: 5px; margin-top: 5px; }
-        .counter button { width: 22px; height: 22px; cursor: pointer; border: 1px solid #ffc1e3; background: #fff0f6; border-radius: 4px; color: #d63384; font-weight: bold; }
-        .counter input { width: 25px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
+        .search-item { 
+            border: 2px solid #f0f0f0; 
+            padding: 8px; 
+            border-radius: 12px; 
+            text-align: center; 
+            background: #fff; 
+        }
+
+        .search-item img { 
+            width: 60px; 
+            height: 60px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+            margin-bottom: 6px; 
+        }
+
+        /* ⭐ 修正：名稱最多顯示兩行 */
+        .search-item .name { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #666; 
+            display: block; 
+            line-height: 1.2em;
+            max-height: 2.4em;
+            overflow: hidden;
+        }
+
+        .counter { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 5px; 
+            margin-top: 5px; 
+        }
+
+        .counter button { 
+            width: 22px; 
+            height: 22px; 
+            cursor: pointer; 
+        }
+
+        .counter input { 
+            width: 25px; 
+            text-align: center; 
+        }
 
         .search-btn { 
             background: linear-gradient(to right, #ff85b2, #f76ca1); 
-            color: white; border: none; padding: 15px 60px; border-radius: 50px; 
-            cursor: pointer; font-size: 18px; font-weight: bold; display: block; margin: 0 auto;
-            box-shadow: 0 6px 20px rgba(255, 133, 178, 0.4); transition: 0.3s;
+            color: white; 
+            border: none; 
+            padding: 12px 40px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            display: block; 
+            margin: 0 auto;
         }
-        .search-btn:hover { transform: scale(1.05); }
 
-        /* 結果列表 (卡片流) */
-        .package-list { display: flex; flex-direction: column; gap: 15px; }
-        
+        .package-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+        }
+
         .package-card {
-            background: white; border-radius: 15px; display: flex; align-items: center;
-            padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border-left: 6px solid var(--primary-pink); transition: 0.3s;
+            background: white; 
+            border-radius: 15px; 
+            display: flex; 
+            align-items: center;
+            padding: 15px;
         }
-        .package-card:hover { transform: scale(1.005); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-        .id-area { width: 180px; padding-right: 20px; border-right: 1px dashed #ddd; }
-        .id-text { font-size: 15px; font-weight: bold; color: #e83e8c; word-break: break-all; }
 
-        .content-area { flex: 1; padding-left: 20px; display: flex; flex-wrap: wrap; gap: 12px; }
-
-        .card-box { width: 80px; text-align: center; position: relative; }
-        .card-box img { width: 100%; height: 80px; object-fit: cover; border: 2px solid #eee; border-radius: 10px; background: #fafafa; }
-        .card-count-tag { 
-            position: absolute; top: -8px; right: -8px; background: #ff4757; color: white; 
-            border-radius: 50%; width: 22px; height: 22px; font-size: 12px; line-height: 22px; 
-            font-weight: bold; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        .id-area { 
+            width: 150px; 
         }
-        .card-label { font-size: 11px; color: #888; margin-top: 5px; font-weight: 500; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
-        /* 載入中動畫 */
-        .loading { text-align: center; padding: 50px; color: var(--primary-pink); font-weight: bold; }
+        .id-text { 
+            font-size: 14px; 
+            font-weight: bold; 
+            color: #e83e8c; 
+        }
+
+        .content-area { 
+            flex: 1; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+        }
+
+        .card-box { 
+            width: 75px; 
+            text-align: center; 
+        }
+
+        .card-box img { 
+            width: 100%; 
+            height: 75px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+        }
+
+        /* ⭐ 修正：卡片名稱最多兩行 */
+        .card-label { 
+            font-size: 11px; 
+            color: #888; 
+            margin-top: 4px; 
+            display: block;
+            line-height: 1.2em;
+            max-height: 2.4em;
+            overflow: hidden;
+        }
+
+        .loading { 
+            text-align: center; 
+            padding: 40px; 
+            color: var(--primary-pink); 
+        }
+
+        @media (max-width: 600px) {
+            .search-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+
+            .search-item img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .card-box {
+                width: 65px;
+            }
+
+            .card-box img {
+                height: 65px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -119,7 +208,7 @@
         <button class="search-btn" @click="doSearch">查詢組合 (๑・ω-)～♥”</button>
     </div>
 
-    <div v-if="loading" class="loading">正在載入試算表資料...</div>
+    <div v-if="loading" class="loading">正在載入資料...</div>
     
     <div v-else class="package-list">
         <div class="package-card" v-for="item in searchResults" :key="item.id">
@@ -128,94 +217,80 @@
             </div>
             <div class="content-area">
                 <div class="card-box" v-for="(count, cardName) in item.cards" :key="cardName">
-                    <img :src="'images/' + cardName + '.png'" onerror="this.src='https://via.placeholder.com/80?text=?'">
-                    <span v-if="count > 1" class="card-count-tag">{{ count }}</span>
+                    <img :src="'images/' + cardName + '.png'">
+                    <span v-if="count > 1">{{ count }}</span>
                     <span class="card-label">{{ cardName }}</span>
                 </div>
             </div>
         </div>
-        
-        <div v-if="searchResults.length === 0" style="text-align: center; padding: 50px; color: #999; background: white; border-radius: 15px;">
-            沒有找到完全符合數量的組合QQ
+
+        <div v-if="searchResults.length === 0" style="text-align: center; padding: 40px;">
+            沒有找到符合條件
         </div>
     </div>
 </div>
 
 <script>
-    const { createApp } = Vue;
+const { createApp } = Vue;
 
-    // --- 【請務必修改這裡】 ---
-    // 貼上你在 Google 試算表發布後取得的 CSV 網址
-    const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuPYiBGLF8aNRN885qbEu3nOQ_WA0wCMxoQLRWDhBYDbe-5P39A4vMTcW9LR1vq8TeoBQWO3tCeZdV/pub?output=csv'; 
+const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuPYiBGLF8aNRN885qbEu3nOQ_WA0wCMxoQLRWDhBYDbe-5P39A4vMTcW9LR1vq8TeoBQWO3tCeZdV/pub?output=csv';
 
-    createApp({
-        data() {
-            return {
-                // 這裡填寫搜尋區要出現的卡片圖片名稱
-                allAvailableCards: ['娜娜莉','早霧','白藏','哈索爾','九原','法帝婭','達芙蒂爾','娜娜莉專武','現實避難所','焰魂狂飆','漆黑青春妄想','茶花會','好狗狗走四方','娜娜莉時裝','萌虎來襲塗裝','男主','女主','自選未用','S常駐角色自選箱'],
-                searchCounts: {}, 
-                allPackages: [],
-                searchResults: [],
-                loading: true
-            }
-        },
-        methods: {
-            changeCount(name, delta) {
-                if (!this.searchCounts[name]) this.searchCounts[name] = 0;
-                let newValue = this.searchCounts[name] + delta;
-                this.searchCounts[name] = newValue < 0 ? 0 : newValue;
-            },
-            doSearch() {
-                // 篩選邏輯：組合內的卡片數量必須大於等於搜尋設定的數量
-                this.searchResults = this.allPackages.filter(pkg => {
-                    for (let name in this.searchCounts) {
-                        let required = this.searchCounts[name];
-                        if (required > 0) {
-                            let pkgCount = pkg.cards[name] || 0;
-                            if (pkgCount < required) return false;
-                        }
-                    }
-                    return true;
-                });
-            },
-            fetchData() {
-                Papa.parse(SPREADSHEET_URL, {
-                    download: true,
-                    header: true,
-                    complete: (results) => {
-                        this.allPackages = results.data
-                            .filter(row => row.id) // 過濾空行
-                            .map(row => {
-                                let cardData = {};
-                                if (row.content) {
-                                    // 支援格式： 名字x數量+名字x數量
-                                    row.content.split('+').forEach(part => {
-                                        let [name, count] = part.split('x');
-                                        if (name) cardData[name.trim()] = parseInt(count) || 1;
-                                    });
-                                }
-                                return { id: row.id, cards: cardData };
-                            });
-                        this.searchResults = this.allPackages;
-                        this.loading = false;
-                    },
-                    error: (err) => {
-                        alert('讀取試算表失敗，請檢查網址是否正確且已發布為 CSV。');
-                        this.loading = false;
-                    }
-                });
-            }
-        },
-        mounted() {
-            this.allAvailableCards.forEach(n => this.searchCounts[n] = 0);
-            if (SPREADSHEET_URL === 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuPYiBGLF8aNRN885qbEu3nOQ_WA0wCMxoQLRWDhBYDbe-5P39A4vMTcW9LR1vq8TeoBQWO3tCeZdV/pubhtml') {
-                alert('請先在 index.html 中填入你的 Google 試算表 CSV 網址！');
-                this.loading = false;
-            } else {
-                this.fetchData();
-            }
+createApp({
+    data() {
+        return {
+            allAvailableCards: ['娜娜莉','早霧','白藏','哈索爾','九原','法帝婭','達芙蒂爾','娜娜莉專武','現實避難所','焰魂狂飆','漆黑青春妄想','茶花會','好狗狗走四方','娜娜莉時裝','萌虎來襲塗裝','男主','女主','自選未用','S常駐角色自選箱'],
+            searchCounts: {},
+            allPackages: [],
+            searchResults: [],
+            loading: true
         }
-    }).mount('#app');
+    },
+    methods: {
+        changeCount(name, delta) {
+            if (!this.searchCounts[name]) this.searchCounts[name] = 0;
+            let newValue = this.searchCounts[name] + delta;
+            this.searchCounts[name] = newValue < 0 ? 0 : newValue;
+        },
+        doSearch() {
+            this.searchResults = this.allPackages.filter(pkg => {
+                for (let name in this.searchCounts) {
+                    let required = this.searchCounts[name];
+                    if (required > 0) {
+                        let pkgCount = pkg.cards[name] || 0;
+                        if (pkgCount < required) return false;
+                    }
+                }
+                return true;
+            });
+        },
+        fetchData() {
+            Papa.parse(SPREADSHEET_URL, {
+                download: true,
+                header: true,
+                complete: (results) => {
+                    this.allPackages = results.data
+                        .filter(row => row.id)
+                        .map(row => {
+                            let cardData = {};
+                            if (row.content) {
+                                row.content.split('+').forEach(part => {
+                                    let [name, count] = part.split('x');
+                                    if (name) cardData[name.trim()] = parseInt(count) || 1;
+                                });
+                            }
+                            return { id: row.id, cards: cardData };
+                        });
+                    this.searchResults = this.allPackages;
+                    this.loading = false;
+                }
+            });
+        }
+    },
+    mounted() {
+        this.allAvailableCards.forEach(n => this.searchCounts[n] = 0);
+        this.fetchData();
+    }
+}).mount('#app');
 </script>
 
 </body>
