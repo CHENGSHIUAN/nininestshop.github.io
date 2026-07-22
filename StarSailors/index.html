@@ -110,6 +110,38 @@
             margin: 0 auto;
         }
 
+        .notice-banner {
+            background-color: #fff0f6;
+            border: 2px dashed #ff85b2;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            color: #4a4a4a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .notice-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #d63384;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .notice-content {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .notice-content ul {
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+        }
+        /* =================================== */
+
         .package-list { 
             display: flex; 
             flex-direction: column; 
@@ -206,6 +238,27 @@
         </div>
         <button class="search-btn" @click="doSearch">查詢組合 (๑・ω-)～♥”</button>
     </div>
+
+    <!-- ========== 公告區塊 ========== -->
+    <div class="notice-banner">
+        <div class="notice-title">📢 買家須知 / 說明事項</div>
+        <div class="notice-content">
+            <p style="margin: 0 0 5px 0;"><b>歡迎使用查詢系統！請參考以下說明：</b></p>
+            <ul>
+                <li>請在上方選取您想要的指定角色/SSR數量，並點選「查詢組合」。</li>
+                <li>複製您看中的<b>組合編號（如 MUSA001）</b>私訊聯絡我詢問價格。</li>
+                <li>帳號皆為正規手工初始號，可安心購買！</li>
+            </ul>
+            <p style="margin: 0 0 5px 0;"><b>角色及回憶碎片說明：</b></p>
+            <ul>
+                <li>海蒂為目前的限定角，重複一隻是110碎片</li>
+                <li>常駐池其他角色，重複一隻是30碎片</li>
+                <li>滿星共需要220碎片，升4星100個，升5星120個</li>
+                <li>回憶碎片滿突需要6個，本體1個+5個重複</li>
+            </ul>
+        </div>
+    </div>
+    <!-- =================================== -->
 
     <div v-if="loading" class="loading">正在載入資料...</div>
     
