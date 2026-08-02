@@ -140,7 +140,6 @@
             margin: 5px 0 0 0;
             padding-left: 20px;
         }
-        /* =================================== */
 
         .package-list { 
             display: flex; 
@@ -154,16 +153,32 @@
             display: flex; 
             align-items: center;
             padding: 15px;
+            gap: 15px;
         }
 
         .id-area { 
-            width: 150px; 
+            width: 140px; 
+            flex-shrink: 0;
         }
 
         .id-text { 
-            font-size: 14px; 
+            font-size: 15px; 
             font-weight: bold; 
             color: #e83e8c; 
+        }
+
+        /* 新增：帶專組合顯示區塊 */
+        .exclusive-area {
+            width: 240px;
+            flex-shrink: 0;
+            font-size: 13px;
+            color: #d63384;
+            background: #fff5f8;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-left: 3px solid #ff85b2;
+            line-height: 1.4;
+            word-break: break-all;
         }
 
         .content-area { 
@@ -197,7 +212,16 @@
             color: var(--primary-pink); 
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .package-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .id-area, .exclusive-area {
+                width: 100%;
+            }
+
             .search-grid {
                 grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             }
@@ -239,7 +263,7 @@
         <button class="search-btn" @click="doSearch">查詢組合 (๑・ω-)～♥”</button>
     </div>
 
-    <!-- ========== 公告區塊 ========== -->
+    <!-- 公告區塊 -->
     <div class="notice-banner">
         <div class="notice-title">📢 買家須知 / 說明事項</div>
         <div class="notice-content">
@@ -259,15 +283,22 @@
             </ul>
         </div>
     </div>
-    <!-- =================================== -->
 
     <div v-if="loading" class="loading">正在載入資料...</div>
     
     <div v-else class="package-list">
         <div class="package-card" v-for="item in searchResults" :key="item.id">
+            <!-- 1. 編號區域 -->
             <div class="id-area">
                 <div class="id-text">{{ item.id }}</div>
             </div>
+
+            <!-- 2. 新增：帶專組合區域 (若試算表該欄有值才顯示) -->
+            <div class="exclusive-area" v-if="item.exclusive">
+                {{ item.exclusive }}
+            </div>
+
+            <!-- 3. 卡片圖片圖標區 -->
             <div class="content-area">
                 <div class="card-box" v-for="(count, cardName) in item.cards" :key="cardName">
                     <img :src="'images/' + cardName + '.png'">
@@ -331,7 +362,11 @@ createApp({
                                     if (name) cardData[name.trim()] = parseInt(count) || 1;
                                 });
                             }
-                            return { id: row.id, cards: cardData };
+                            return { 
+                                id: row.id, 
+                                exclusive: row.exclusive || row['帶專組合'] || '', // 自動相容專武欄位名稱
+                                cards: cardData 
+                            };
                         });
                     this.searchResults = this.allPackages;
                     this.loading = false;
