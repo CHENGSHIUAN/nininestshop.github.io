@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖婗⭐星絆之旅⭐組合查詢</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        :root {
+            --primary-pink: #ff85b2;
+            --soft-pink: #fff0f6;
+            --bg-gray: #fdfbfb;
+            --text-dark: #4a4a4a;
+        }
+
+        body { 
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
+            background-color: var(--bg-gray); 
+            margin: 0; padding: 20px; color: var(--text-dark); 
+        }
+
+        .game-header { 
+            text-align: center; 
+            background: linear-gradient(135deg, #333, #555); 
+            color: white; 
+            padding: 25px; 
+            border-radius: 15px; 
+            margin-bottom: 20px; 
+        }
+
+        .game-header h1 { 
+            margin: 0; 
+            font-size: 26px; 
+        }
+
+        .filter-section { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-bottom: 25px; 
+        }
+
+        .search-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+            gap: 12px; 
+            margin-bottom: 20px; 
+        }
+
+        .search-item { 
+            border: 2px solid #f0f0f0; 
+            padding: 8px; 
+            border-radius: 12px; 
+            text-align: center; 
+            background: #fff; 
+        }
+
+        .search-item img { 
+            width: 60px; 
+            height: 60px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+            margin-bottom: 6px; 
+        }
+
+        .search-item .name { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #666; 
+            display: block; 
+            line-height: 1.2em;
+            max-height: 2.4em;
+            overflow: hidden;
+        }
+
+        .counter { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 5px; 
+            margin-top: 5px; 
+        }
+
+        .counter button { 
+            width: 22px; 
+            height: 22px; 
+            cursor: pointer; 
+            border: 1px solid #ffc1e3; 
+            background: #fff0f6; 
+            border-radius: 4px; 
+            color: #d63384; 
+            font-weight: bold; 
+        }
+
+        .counter input { 
+            width: 25px; 
+            text-align: center; 
+        }
+
+        .search-btn { 
+            background: linear-gradient(to right, #ff85b2, #f76ca1); 
+            color: white; 
+            border: none; 
+            padding: 12px 40px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            display: block; 
+            margin: 0 auto;
+        }
+
+        .notice-banner {
+            background-color: #fff0f6;
+            border: 2px dashed #ff85b2;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            color: #4a4a4a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .notice-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #d63384;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .notice-content {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .notice-content ul {
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+        }
+
+        .package-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+        }
+
+        .package-card {
+            background: white; 
+            border-radius: 15px; 
+            display: flex; 
+            align-items: center;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .id-area { 
+            width: 140px; 
+            flex-shrink: 0;
+        }
+
+        .id-text { 
+            font-size: 15px; 
+            font-weight: bold; 
+            color: #e83e8c; 
+        }
+
+        /* 新增：帶專組合顯示區塊 */
+        .exclusive-area {
+            width: 240px;
+            flex-shrink: 0;
+            font-size: 13px;
+            color: #d63384;
+            background: #fff5f8;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-left: 3px solid #ff85b2;
+            line-height: 1.4;
+            word-break: break-all;
+        }
+
+        .content-area { 
+            flex: 1; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+        }
+
+        .card-box { width: 80px; text-align: center; position: relative; }
+        .card-box img { width: 100%; height: 80px; object-fit: cover; border: 2px solid #eee; border-radius: 10px; background: #fafafa; }
+        .card-count-tag { 
+            position: absolute; top: -8px; right: -8px; background: #ff4757; color: white; 
+            border-radius: 50%; width: 22px; height: 22px; font-size: 12px; line-height: 22px; 
+            font-weight: bold; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .card-label { 
+            font-size: 11px; 
+            color: #888; 
+            margin-top: 4px; 
+            display: block;
+            line-height: 1.2em;
+            max-height: 2.4em;
+            overflow: hidden;
+        }
+
+        .loading { 
+            text-align: center; 
+            padding: 40px; 
+            color: var(--primary-pink); 
+        }
+
+        @media (max-width: 768px) {
+            .package-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .id-area, .exclusive-area {
+                width: 100%;
+            }
+
+            .search-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+
+            .search-item img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .card-box {
+                width: 65px;
+            }
+
+            .card-box img {
+                height: 65px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <header class="game-header">
+        <h1>💖婗⭐星絆之旅⭐台港澳</h1>
+    </header>
+
+    <div class="filter-section">
+        <div class="search-grid">
+            <div v-for="name in allAvailableCards" :key="name" class="search-item">
+                <img :src="'images/' + name + '.png'" onerror="this.src='https://via.placeholder.com/65?text=?'">
+                <span class="name">{{ name }}</span>
+                <div class="counter">
+                    <button @click="changeCount(name, -1)">-</button>
+                    <input type="text" :value="searchCounts[name] || 0" readonly>
+                    <button @click="changeCount(name, 1)">+</button>
+                </div>
+            </div>
+        </div>
+        <button class="search-btn" @click="doSearch">查詢組合 (๑・ω-)～♥”</button>
+    </div>
+
+    <!-- 公告區塊 -->
+    <div class="notice-banner">
+        <div class="notice-title">📢 買家須知 / 說明事項</div>
+        <div class="notice-content">
+            <p style="margin: 0 0 5px 0;"><b>歡迎使用查詢系統！請參考以下說明：</b></p>
+            <ul>
+                <li>請在上方選取您想要的指定角色/SSR數量，並點選「查詢組合」。</li>
+                <li>複製您看中的<b>組合編號（如 MUSA001）</b>私訊聯絡我詢問價格。</li>
+                <li>帳號皆為正規手工初始號，可安心購買！</li>
+            </ul>
+            <p style="margin: 0 0 5px 0;"><b>角色及回憶碎片說明：</b></p>
+            <ul>
+                <li>泳裝娜蒂雅為目前的限定角，重複一隻是110碎片</li>
+                <li>海蒂為上一期限定角，重複一隻是110碎片</li>
+                <li>常駐池其他角色，重複一隻是30碎片</li>
+                <li>滿星共需要220碎片，升4星100個，升5星120個</li>
+                <li>回憶碎片滿突需要6個，本體1個+5個重複</li>
+            </ul>
+        </div>
+    </div>
+
+    <div v-if="loading" class="loading">正在載入資料...</div>
+    
+    <div v-else class="package-list">
+        <div class="package-card" v-for="item in searchResults" :key="item.id">
+            <!-- 1. 編號區域 -->
+            <div class="id-area">
+                <div class="id-text">{{ item.id }}</div>
+            </div>
+
+            <!-- 2. 新增：帶專組合區域 (若試算表該欄有值才顯示) -->
+            <div class="exclusive-area" v-if="item.exclusive">
+                {{ item.exclusive }}
+            </div>
+
+            <!-- 3. 卡片圖片圖標區 -->
+            <div class="content-area">
+                <div class="card-box" v-for="(count, cardName) in item.cards" :key="cardName">
+                    <img :src="'images/' + cardName + '.png'">
+                    <span v-if="count > 1" class="card-count-tag">{{ count }}</span>
+                    <span class="card-label">{{ cardName }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="searchResults.length === 0" style="text-align: center; padding: 50px; color: #999; background: white; border-radius: 15px;">
+            沒有找到完全符合數量的組合QQ
+        </div>
+    </div>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRatyIIWh1kX_atGvZiXdFE0yWDgMwxUwxEhkblKTC313SfsFSgqv7vck07yUAeN5wnEQLnw7XsuY4V/pub?output=csv';
+
+createApp({
+    data() {
+        return {
+            allAvailableCards: ['泳裝娜蒂雅[限定]','海蒂','凱菈','妮娜','艾莉絲','珍珍','伊鈴','伊坦','卡洛琳','SSR夏夜的飽腹美夢','SSR海蒂看見的世界','SSR紅髮','SSR背叛者','SSR消逝的回憶','SSR第8502公主們','SSR光之騎士','SSR泡泡','SSR秘密花園','SSR光之守護者'],
+            searchCounts: {},
+            allPackages: [],
+            searchResults: [],
+            loading: true
+        }
+    },
+    methods: {
+        changeCount(name, delta) {
+            if (!this.searchCounts[name]) this.searchCounts[name] = 0;
+            let newValue = this.searchCounts[name] + delta;
+            this.searchCounts[name] = newValue < 0 ? 0 : newValue;
+        },
+        doSearch() {
+            this.searchResults = this.allPackages.filter(pkg => {
+                for (let name in this.searchCounts) {
+                    let required = this.searchCounts[name];
+                    if (required > 0) {
+                        let pkgCount = pkg.cards[name] || 0;
+                        if (pkgCount < required) return false;
+                    }
+                }
+                return true;
+            });
+        },
+        fetchData() {
+            Papa.parse(SPREADSHEET_URL, {
+                download: true,
+                header: true,
+                complete: (results) => {
+                    this.allPackages = results.data
+                        .filter(row => row.id)
+                        .map(row => {
+                            let cardData = {};
+                            if (row.content) {
+                                row.content.split('+').forEach(part => {
+                                    let [name, count] = part.split('x');
+                                    if (name) cardData[name.trim()] = parseInt(count) || 1;
+                                });
+                            }
+                            return { 
+                                id: row.id, 
+                                exclusive: row.exclusive || row['帶專組合'] || '', // 自動相容專武欄位名稱
+                                cards: cardData 
+                            };
+                        });
+                    this.searchResults = this.allPackages;
+                    this.loading = false;
+                }
+            });
+        }
+    },
+    mounted() {
+        this.allAvailableCards.forEach(n => this.searchCounts[n] = 0);
+        this.fetchData();
+    }
+}).mount('#app');
+</script>
+
+</body>
+</html>
